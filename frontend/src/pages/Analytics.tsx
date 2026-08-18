@@ -1,4 +1,3 @@
-import { members } from '../lib/mockData'
 import { useAppStore } from '../store/useAppStore'
 import type { TaskStatus, TaskPriority } from '../lib/mockData'
 
@@ -57,6 +56,7 @@ export function Analytics() {
   const projects = useAppStore((s) => s.projects)
   const tasks = useAppStore((s) => s.tasks)
   const sprints = useAppStore((s) => s.sprints)
+  const members = useAppStore((s) => s.members)
 
   const totalTasks = tasks.length
   const doneTasks = tasks.filter((t) => t.status === 'DONE').length

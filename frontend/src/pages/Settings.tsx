@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { members } from '../lib/mockData'
 import { useAppStore, type NotificationCategory } from '../store/useAppStore'
 
 const categories: { key: NotificationCategory; label: string }[] = [
@@ -12,14 +11,18 @@ const categories: { key: NotificationCategory; label: string }[] = [
 
 export function Settings() {
   const settings = useAppStore((s) => s.settings)
+  const members = useAppStore((s) => s.members)
   const updateSettings = useAppStore((s) => s.updateSettings)
   const toggleMutedCategory = useAppStore((s) => s.toggleMutedCategory)
   const resetWorkspace = useAppStore((s) => s.resetWorkspace)
+  const addMember = useAppStore((s) => s.addMember)
 
   const [displayName, setDisplayName] = useState(settings.displayName)
   const [role, setRole] = useState(settings.role)
   const [saved, setSaved] = useState(false)
   const [confirmingReset, setConfirmingReset] = useState(false)
+  const [newMemberName, setNewMemberName] = useState('')
+  const [newMemberRole, setNewMemberRole] = useState('')
 
   useEffect(() => {
     setDisplayName(settings.displayName)
@@ -36,6 +39,14 @@ export function Settings() {
   function handleReset() {
     resetWorkspace()
     setConfirmingReset(false)
+  }
+
+  function handleAddMember(e: React.FormEvent) {
+    e.preventDefault()
+    if (!newMemberName.trim() || !newMemberRole.trim()) return
+    addMember({ name: newMemberName.trim(), role: newMemberRole.trim() })
+    setNewMemberName('')
+    setNewMemberRole('')
   }
 
   return (
@@ -84,6 +95,49 @@ export function Settings() {
               </button>
               {saved && <span className="text-xs font-medium text-success">Saved</span>}
             </div>
+          </form>
+        </section>
+
+        <section className="border border-line bg-white p-6">
+          <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-mute">
+            Members
+          </h2>
+          <p className="mb-4 text-sm text-mute">
+            Everyone in the workspace roster, available as assignees and team members.
+          </p>
+          <div className="flex flex-col gap-2">
+            {members.map((m) => (
+              <div key={m.id} className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-ink text-[9px] font-medium text-white">
+                    {m.initials}
+                  </div>
+                  <span>{m.name}</span>
+                  <span className="text-xs text-mute">{m.role}</span>
+                </div>
+                <span className="text-xs text-mute">{m.utilization}% utilized</span>
+              </div>
+            ))}
+          </div>
+          <form onSubmit={handleAddMember} className="mt-4 flex flex-col gap-2 border-t border-line pt-4 sm:flex-row">
+            <input
+              value={newMemberName}
+              onChange={(e) => setNewMemberName(e.target.value)}
+              placeholder="Name"
+              className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink sm:flex-1"
+            />
+            <input
+              value={newMemberRole}
+              onChange={(e) => setNewMemberRole(e.target.value)}
+              placeholder="Role"
+              className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink sm:flex-1"
+            />
+            <button
+              type="submit"
+              className="shrink-0 rounded-md bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-black"
+            >
+              + Add Member
+            </button>
           </form>
         </section>
 

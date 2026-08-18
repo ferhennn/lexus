@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Modal } from '../ui/Modal'
 import { useAppStore } from '../../store/useAppStore'
-import { members } from '../../lib/mockData'
 import type { TaskPriority, TaskStatus } from '../../lib/mockData'
 
 const statuses: TaskStatus[] = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'TESTING', 'DONE']
@@ -20,6 +19,7 @@ export function NewTaskModal({
 }) {
   const projects = useAppStore((s) => s.projects)
   const sprints = useAppStore((s) => s.sprints)
+  const members = useAppStore((s) => s.members)
   const addTask = useAppStore((s) => s.addTask)
   const defaultAssigneeId = useAppStore((s) => s.settings.defaultAssigneeId)
 

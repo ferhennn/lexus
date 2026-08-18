@@ -54,13 +54,6 @@ export interface Project {
   memberCount: number
 }
 
-export const members: Member[] = [
-  { id: 'devendra', name: 'Devendra', initials: 'DF', role: 'Project Manager', utilization: 92 },
-  { id: 'achal', name: 'Achal', initials: 'AC', role: 'Backend Engineer', utilization: 64 },
-  { id: 'vidhi', name: 'Vidhi', initials: 'VD', role: 'Frontend Engineer', utilization: 81 },
-  { id: 'palak', name: 'Palak', initials: 'PL', role: 'QA Engineer', utilization: 43 },
-]
-
 export const velocity = 38
 
 export const activity = [
@@ -74,6 +67,6 @@ export const activity = [
 export const aiBrief =
   'The sprint is on track, but API integration is becoming the primary delivery risk.'
 
-export function memberById(id: string): Member | undefined {
+export function memberById(members: Member[], id: string): Member | undefined {
   return members.find((m) => m.id === id)
 }

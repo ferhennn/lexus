@@ -12,6 +12,7 @@ const priorityColor: Record<string, string> = {
 
 export function Backlog() {
   const tasks = useAppStore((s) => s.tasks)
+  const members = useAppStore((s) => s.members)
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
@@ -39,7 +40,7 @@ export function Backlog() {
           <span>Assignee</span>
         </div>
         {tasks.map((t) => {
-          const assignee = memberById(t.assigneeId)
+          const assignee = memberById(members, t.assigneeId)
           return (
             <div
               key={t.id}

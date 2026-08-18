@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { members, memberById, type Member } from '../lib/mockData'
+import { memberById, type Member } from '../lib/mockData'
 import { useAppStore } from '../store/useAppStore'
 import { NewTeamModal } from '../components/team/NewTeamModal'
 
 export function Team() {
   const teams = useAppStore((s) => s.teams)
   const projects = useAppStore((s) => s.projects)
+  const members = useAppStore((s) => s.members)
   const addMemberToTeam = useAppStore((s) => s.addMemberToTeam)
   const removeMemberFromTeam = useAppStore((s) => s.removeMemberFromTeam)
   const assignProjectToTeam = useAppStore((s) => s.assignProjectToTeam)
@@ -38,7 +39,7 @@ export function Team() {
 
         {teams.map((team) => {
           const teamMembers = team.memberIds
-            .map(memberById)
+            .map((id) => memberById(members, id))
             .filter((m): m is Member => m !== undefined)
           const teamProjects = team.projectIds
             .map((pid) => projects.find((p) => p.id === pid))

@@ -1,10 +1,20 @@
-import { members, activity, aiBrief, velocity } from '../lib/mockData'
+import { activity, aiBrief, velocity } from '../lib/mockData'
 import { useAppStore } from '../store/useAppStore'
+
+function greetingForHour(hour: number) {
+  if (hour < 5) return 'GOOD NIGHT'
+  if (hour < 12) return 'GOOD MORNING'
+  if (hour < 17) return 'GOOD AFTERNOON'
+  if (hour < 21) return 'GOOD EVENING'
+  return 'GOOD NIGHT'
+}
 
 export function Home() {
   const tasks = useAppStore((s) => s.tasks)
   const sprints = useAppStore((s) => s.sprints)
+  const members = useAppStore((s) => s.members)
   const displayName = useAppStore((s) => s.settings.displayName)
+  const greeting = greetingForHour(new Date().getHours())
   const dueToday = tasks.filter((t) => t.status === 'IN_PROGRESS' || t.status === 'IN_REVIEW')
   const blocked = tasks.filter((t) => t.blocked)
   const highPriority = tasks.filter((t) => t.priority === 'URGENT' || t.priority === 'HIGH')
@@ -30,7 +40,7 @@ export function Home() {
         Overview
       </div>
       <h1 className="text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
-        GOOD MORNING,
+        {greeting},
         <br />
         {displayName.toUpperCase()}.
       </h1>

@@ -21,6 +21,7 @@ const priorityColor: Record<string, string> = {
 
 export function Board() {
   const tasks = useAppStore((s) => s.tasks)
+  const members = useAppStore((s) => s.members)
   const updateTaskStatus = useAppStore((s) => s.updateTaskStatus)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalStatus, setModalStatus] = useState<TaskStatus>('BACKLOG')
@@ -58,7 +59,7 @@ export function Board() {
               </div>
               <div className="flex flex-col gap-2">
                 {colTasks.map((t) => {
-                  const assignee = memberById(t.assigneeId)
+                  const assignee = memberById(members, t.assigneeId)
                   return (
                     <div
                       key={t.id}

@@ -1,6 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Project, Sprint, SprintStatus, Task, TaskPriority, TaskStatus } from '../lib/mockData'
+import type { Member, Project, Sprint, SprintStatus, Task, TaskPriority, TaskStatus } from '../lib/mockData'
+
+const seedMembers: Member[] = [
+  { id: 'devendra', name: 'Devendra', initials: 'DF', role: 'Project Manager', utilization: 92 },
+  { id: 'achal', name: 'Achal', initials: 'AC', role: 'Backend Engineer', utilization: 64 },
+  { id: 'vidhi', name: 'Vidhi', initials: 'VD', role: 'Frontend Engineer', utilization: 81 },
+  { id: 'palak', name: 'Palak', initials: 'PL', role: 'QA Engineer', utilization: 43 },
+]
 
 const seedProjects: Project[] = [
   {
@@ -98,6 +105,11 @@ interface NewSprintInput {
   committedPoints: number
 }
 
+interface NewMemberInput {
+  name: string
+  role: string
+}
+
 export interface Settings {
   displayName: string
   role: string
@@ -118,8 +130,10 @@ interface AppState {
   teams: Team[]
   sprints: Sprint[]
   notifications: Notification[]
+  members: Member[]
   settings: Settings
   taskCounter: number
+  addMember: (input: NewMemberInput) => Member
   addProject: (input: NewProjectInput) => Project
   addTask: (input: NewTaskInput) => Task
   updateTaskStatus: (id: string, status: TaskStatus) => void
@@ -146,8 +160,23 @@ export const useAppStore = create<AppState>()(
   teams: seedTeams,
   sprints: seedSprints,
   notifications: seedNotifications,
+  members: seedMembers,
   settings: defaultSettings,
   taskCounter: 191,
+
+  addMember: (input) => {
+    const id = input.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `member-${Date.now()}`
+    const initials = input.name
+      .trim()
+      .split(/\s+/)
+      .map((part) => part[0])
+      .slice(0, 2)
+      .join('')
+      .toUpperCase()
+    const newMember: Member = { id, name: input.name, initials, role: input.role, utilization: 0 }
+    set((state) => ({ members: [...state.members, newMember] }))
+    return newMember
+  },
 
   addProject: (input) => {
     const newProject: Project = {
@@ -303,6 +332,7 @@ export const useAppStore = create<AppState>()(
       teams: seedTeams,
       sprints: seedSprints,
       notifications: seedNotifications,
+      members: seedMembers,
       settings: defaultSettings,
       taskCounter: 191,
     })

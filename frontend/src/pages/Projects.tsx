@@ -19,6 +19,7 @@ const healthLabel: Record<string, string> = {
 export function Projects() {
   const projects = useAppStore((s) => s.projects)
   const teams = useAppStore((s) => s.teams)
+  const members = useAppStore((s) => s.members)
   const [modalOpen, setModalOpen] = useState(false)
   const [taskModalOpen, setTaskModalOpen] = useState(false)
   const [taskProjectId, setTaskProjectId] = useState<string | undefined>(undefined)
@@ -46,7 +47,7 @@ export function Projects() {
       <div className="mt-12 flex flex-col gap-6">
         {projects.map((project, i) => {
           const team = teams.find((t) => t.projectIds.includes(project.id))
-          const teamMembers = team ? team.memberIds.map(memberById).filter(Boolean) : []
+          const teamMembers = team ? team.memberIds.map((id) => memberById(members, id)).filter(Boolean) : []
 
           return (
           <div key={project.id} className="border border-line bg-white p-4 sm:p-6 lg:p-8">
