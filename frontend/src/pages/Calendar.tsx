@@ -69,8 +69,8 @@ export function Calendar() {
   })
 
   return (
-    <div className="px-16 py-12">
-      <div className="mb-1 flex items-center justify-between">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
         <div className="text-xs font-medium uppercase tracking-widest text-mute">Schedule</div>
         <div className="flex items-center gap-2">
           <button
@@ -95,7 +95,7 @@ export function Calendar() {
           </button>
         </div>
       </div>
-      <h1 className="text-5xl font-semibold tracking-tight text-ink">
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">
         {monthNames[month]} {year}
       </h1>
 
@@ -110,7 +110,8 @@ export function Calendar() {
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-7 border border-line bg-white">
+      <div className="mt-6 overflow-x-auto border border-line bg-white">
+      <div className="grid min-w-[640px] grid-cols-7">
         {weekdayLabels.map((label) => (
           <div
             key={label}
@@ -128,7 +129,7 @@ export function Calendar() {
           return (
             <div
               key={iso}
-              className={`min-h-24 border-b border-r border-line p-2 ${
+              className={`min-h-20 sm:min-h-24 border-b border-r border-line p-2 ${
                 inMonth ? 'bg-white' : 'bg-paper/60'
               }`}
             >
@@ -161,6 +162,7 @@ export function Calendar() {
           )
         })}
       </div>
+      </div>
 
       <div className="mt-10">
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-mute">
@@ -177,14 +179,14 @@ export function Calendar() {
               return (
                 <div
                   key={s.id}
-                  className="flex items-center justify-between border border-line bg-white px-4 py-3 text-sm"
+                  className="flex flex-col gap-1 border border-line bg-white px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className={`h-2.5 w-2.5 rounded-full ${colorByProject[s.projectId]}`} />
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${colorByProject[s.projectId]}`} />
                     <span className="font-medium">{project?.name}</span>
                     <span className="text-mute">Sprint {s.number} · {s.goal}</span>
                   </div>
-                  <span className="text-xs text-mute">
+                  <span className="shrink-0 text-xs text-mute">
                     {s.startDate} → {s.endDate}
                   </span>
                 </div>

@@ -24,18 +24,18 @@ export function Home() {
       : 0
 
   return (
-    <div className="px-16 py-12">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
       <div className="mb-1 text-xs font-medium uppercase tracking-widest text-mute">
         Overview
       </div>
-      <h1 className="text-5xl font-semibold leading-tight tracking-tight text-ink">
+      <h1 className="text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
         GOOD MORNING,
         <br />
         DEVENDRA.
       </h1>
       <p className="mt-3 text-base text-mute">Here's what needs your attention.</p>
 
-      <div className="mt-12 grid grid-cols-3 gap-8">
+      <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
         <section className="col-span-2 border border-line bg-white p-6">
           <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-mute">
             Today's Focus
@@ -88,7 +88,7 @@ export function Home() {
         </section>
       </div>
 
-      <div className="mt-8 grid grid-cols-3 gap-8">
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
         <section className="col-span-2 border border-accent/40 bg-accent/10 p-6">
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-widest text-ink/60">
             AI Brief
@@ -122,7 +122,7 @@ export function Home() {
         </section>
       </div>
 
-      <div className="mt-8 grid grid-cols-3 gap-8">
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
         <section className="col-span-2 border border-line bg-white p-6">
           <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-mute">
             Recent Activity

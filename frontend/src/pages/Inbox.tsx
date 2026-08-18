@@ -32,21 +32,21 @@ export function Inbox() {
   const unreadCount = notifications.filter((n) => !n.read && !n.archived).length
 
   return (
-    <div className="px-16 py-12">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
       <div className="mb-1 text-xs font-medium uppercase tracking-widest text-mute">
         Notifications
       </div>
-      <h1 className="text-5xl font-semibold tracking-tight text-ink">Inbox</h1>
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">Inbox</h1>
       {unreadCount > 0 && (
         <p className="mt-3 text-sm text-mute">{unreadCount} unread</p>
       )}
 
-      <div className="mt-8 flex gap-1 border-b border-line">
+      <div className="mt-8 flex gap-1 overflow-x-auto border-b border-line">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-4 py-2 text-sm font-medium ${
+            className={`shrink-0 px-4 py-2 text-sm font-medium ${
               tab === t.key
                 ? 'border-b-2 border-ink text-ink'
                 : 'text-mute hover:text-ink'
@@ -64,7 +64,7 @@ export function Inbox() {
         {visible.map((n) => (
           <div
             key={n.id}
-            className="flex items-center justify-between gap-4 border-b border-line px-5 py-4 last:border-0"
+            className="flex flex-col gap-3 border-b border-line px-4 py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5"
           >
             <div className="flex items-center gap-3">
               <span
@@ -80,7 +80,7 @@ export function Inbox() {
                 <div className="mt-0.5 text-xs text-mute">{n.time}</div>
               </div>
             </div>
-            <div className="flex shrink-0 gap-2 text-xs">
+            <div className="flex flex-wrap shrink-0 gap-2 text-xs">
               {!n.read && (
                 <button
                   onClick={() => markRead(n.id)}

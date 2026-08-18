@@ -31,8 +31,8 @@ export function Board() {
   }
 
   return (
-    <div className="flex h-full flex-col px-8 py-8">
-      <div className="mb-1 flex items-center justify-between px-8">
+    <div className="flex h-full flex-col py-6 lg:py-8">
+      <div className="mb-1 flex items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="text-xs font-medium uppercase tracking-widest text-mute">
           Delivery
         </div>
@@ -43,9 +43,9 @@ export function Board() {
           + New Task
         </button>
       </div>
-      <h1 className="px-8 text-3xl font-semibold tracking-tight text-ink">Board</h1>
+      <h1 className="px-4 text-3xl font-semibold tracking-tight text-ink sm:px-6 lg:px-8">Board</h1>
 
-      <div className="mt-6 flex flex-1 gap-4 overflow-x-auto px-8 pb-4">
+      <div className="mt-6 flex flex-1 gap-4 overflow-x-auto px-4 pb-4 sm:px-6 lg:px-8">
         {columns.map((col) => {
           const colTasks = tasks.filter((t) => t.status === col.key)
           return (

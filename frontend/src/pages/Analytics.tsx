@@ -95,11 +95,11 @@ export function Analytics() {
   const maxUtilization = Math.max(...members.map((m) => m.utilization), 1)
 
   return (
-    <div className="px-16 py-12">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
       <div className="mb-1 text-xs font-medium uppercase tracking-widest text-mute">Insights</div>
-      <h1 className="text-5xl font-semibold tracking-tight text-ink">Analytics</h1>
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">Analytics</h1>
 
-      <div className="mt-10 grid grid-cols-4 gap-6">
+      <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
         <StatTile label="Total Tasks" value={String(totalTasks)} />
         <StatTile
           label="Completion Rate"
@@ -110,7 +110,7 @@ export function Analytics() {
         <StatTile label="Blocked Tasks" value={String(blockedTasks)} />
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-8">
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
         <section className="border border-line bg-white p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-widest text-mute">

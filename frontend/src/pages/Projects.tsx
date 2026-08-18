@@ -29,7 +29,7 @@ export function Projects() {
   }
 
   return (
-    <div className="px-16 py-12">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
       <div className="mb-1 flex items-center justify-between">
         <div className="text-xs font-medium uppercase tracking-widest text-mute">
           Workspace
@@ -41,7 +41,7 @@ export function Projects() {
           + New Project
         </button>
       </div>
-      <h1 className="text-5xl font-semibold tracking-tight text-ink">Projects</h1>
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">Projects</h1>
 
       <div className="mt-12 flex flex-col gap-6">
         {projects.map((project, i) => {
@@ -49,24 +49,24 @@ export function Projects() {
           const teamMembers = team ? team.memberIds.map(memberById).filter(Boolean) : []
 
           return (
-          <div key={project.id} className="border border-line bg-white p-8">
-            <div className="flex items-center justify-between">
+          <div key={project.id} className="border border-line bg-white p-4 sm:p-6 lg:p-8">
+            <div className="flex items-center justify-between gap-3">
               <div className="text-xs font-semibold uppercase tracking-widest text-mute">
                 Project {String(i + 1).padStart(2, '0')}
               </div>
               <button
                 onClick={() => openNewTask(project.id)}
-                className="rounded-md border border-line px-3 py-1.5 text-xs font-medium hover:bg-paper"
+                className="shrink-0 rounded-md border border-line px-3 py-1.5 text-xs font-medium hover:bg-paper"
               >
                 + Add Task
               </button>
             </div>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight">{project.name}</h2>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{project.name}</h2>
             <p className="mt-2 max-w-xl text-sm text-mute">
               {project.description || 'No description yet.'}
             </p>
 
-            <div className="mt-6 grid grid-cols-5 gap-8 border-t border-line pt-6 text-sm">
+            <div className="mt-6 grid grid-cols-2 gap-6 border-t border-line pt-6 text-sm sm:grid-cols-3 lg:grid-cols-5 lg:gap-8">
               <div>
                 <div className="mb-1 text-xs uppercase tracking-wide text-mute">Progress</div>
                 <div className="text-lg font-medium">{project.progress}%</div>

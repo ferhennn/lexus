@@ -1,8 +1,8 @@
 export function Login() {
   return (
     <div className="grid min-h-screen grid-cols-1 bg-white md:grid-cols-2">
-      <div className="flex flex-col justify-center bg-ink px-16 py-12 text-white">
-        <h1 className="text-6xl font-semibold leading-[1.05] tracking-tight">
+      <div className="flex flex-col justify-center bg-ink px-6 py-10 text-white sm:px-16 sm:py-12">
+        <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
           BUILD BETTER.
           <br />
           TOGETHER.
@@ -12,7 +12,7 @@ export function Login() {
           shipping software.
         </p>
       </div>
-      <div className="flex flex-col justify-center px-16 py-12">
+      <div className="flex flex-col justify-center px-6 py-10 sm:px-16 sm:py-12">
         <form className="mx-auto flex w-full max-w-sm flex-col gap-4">
           <div>
             <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">

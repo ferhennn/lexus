@@ -15,7 +15,7 @@ export function Team() {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
-    <div className="px-16 py-12">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
       <div className="mb-1 flex items-center justify-between">
         <div className="text-xs font-medium uppercase tracking-widest text-mute">
           Organization
@@ -27,7 +27,7 @@ export function Team() {
           + New Team
         </button>
       </div>
-      <h1 className="text-5xl font-semibold tracking-tight text-ink">Team</h1>
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">Team</h1>
 
       <div className="mt-12 flex flex-col gap-6">
         {teams.length === 0 && (
@@ -50,10 +50,10 @@ export function Team() {
             : 0
 
           return (
-            <div key={team.id} className="border border-line bg-white p-8">
-              <div className="flex items-start justify-between">
+            <div key={team.id} className="border border-line bg-white p-4 sm:p-6 lg:p-8">
+              <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-2xl font-semibold tracking-tight">{team.name}</h2>
+                  <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">{team.name}</h2>
                   <p className="mt-1 text-sm text-mute">
                     {teamMembers.length} member{teamMembers.length === 1 ? '' : 's'} · avg
                     utilization {avgUtilization}%
@@ -61,7 +61,7 @@ export function Team() {
                 </div>
                 <button
                   onClick={() => deleteTeam(team.id)}
-                  className="text-xs font-medium text-mute hover:text-danger"
+                  className="shrink-0 text-xs font-medium text-mute hover:text-danger"
                 >
                   Delete team
                 </button>
@@ -74,7 +74,7 @@ export function Team() {
                 />
               </div>
 
-              <div className="mt-6 grid grid-cols-2 gap-8 border-t border-line pt-6">
+              <div className="mt-6 grid grid-cols-1 gap-6 border-t border-line pt-6 sm:grid-cols-2 sm:gap-8">
                 <div>
                   <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-mute">
                     Members

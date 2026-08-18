@@ -15,7 +15,7 @@ export function Backlog() {
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
-    <div className="px-16 py-12">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
       <div className="mb-1 flex items-center justify-between">
         <div className="text-xs font-medium uppercase tracking-widest text-mute">
           Delivery
@@ -27,10 +27,10 @@ export function Backlog() {
           + New Task
         </button>
       </div>
-      <h1 className="text-5xl font-semibold tracking-tight text-ink">Backlog</h1>
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">Backlog</h1>
 
-      <div className="mt-10 border border-line bg-white">
-        <div className="grid grid-cols-[100px_1fr_120px_100px_100px_140px] border-b border-line bg-paper px-4 py-2 text-xs font-semibold uppercase tracking-wide text-mute">
+      <div className="mt-10 overflow-x-auto border border-line bg-white">
+        <div className="min-w-[720px] grid grid-cols-[100px_1fr_120px_100px_100px_140px] border-b border-line bg-paper px-4 py-2 text-xs font-semibold uppercase tracking-wide text-mute">
           <span>ID</span>
           <span>Title</span>
           <span>Status</span>
@@ -43,7 +43,7 @@ export function Backlog() {
           return (
             <div
               key={t.id}
-              className="grid grid-cols-[100px_1fr_120px_100px_100px_140px] items-center border-b border-line px-4 py-3 text-sm last:border-0 hover:bg-paper/60"
+              className="min-w-[720px] grid grid-cols-[100px_1fr_120px_100px_100px_140px] items-center border-b border-line px-4 py-3 text-sm last:border-0 hover:bg-paper/60"
             >
               <span className="font-mono text-xs text-mute">{t.id}</span>
               <span className="flex items-center gap-2">

@@ -39,11 +39,11 @@ export function MyWork() {
   const blocked = tasks.filter((t) => t.blocked)
 
   return (
-    <div className="px-16 py-12">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
       <div className="mb-1 text-xs font-medium uppercase tracking-widest text-mute">
         Personal
       </div>
-      <h1 className="text-5xl font-semibold tracking-tight text-ink">My Work</h1>
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">My Work</h1>
 
       {!suggestionDismissed && (
         <div className="mt-8 border border-accent/40 bg-accent/10 p-6">
@@ -72,7 +72,7 @@ export function MyWork() {
         </div>
       )}
 
-      <div className="mt-8 grid grid-cols-2 gap-8">
+      <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8">
         <section className="border border-line bg-white p-6">
           <h2 className="mb-2 text-xs font-semibold uppercase tracking-widest text-mute">
             Today

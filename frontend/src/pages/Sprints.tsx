@@ -29,8 +29,8 @@ export function Sprints() {
   }
 
   return (
-    <div className="px-16 py-12">
-      <div className="mb-1 flex items-center justify-between">
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
         <div className="text-xs font-medium uppercase tracking-widest text-mute">Delivery</div>
         <button
           onClick={() => openNewSprint(undefined)}
@@ -39,7 +39,7 @@ export function Sprints() {
           + New Sprint
         </button>
       </div>
-      <h1 className="text-5xl font-semibold tracking-tight text-ink">Sprints</h1>
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">Sprints</h1>
 
       <div className="mt-10 flex flex-col gap-8">
         {projects.map((project) => {
@@ -49,7 +49,7 @@ export function Sprints() {
 
           return (
             <div key={project.id}>
-              <div className="mb-3 flex items-center justify-between">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-lg font-semibold tracking-tight text-ink">{project.name}</h2>
                 <button
                   onClick={() => openNewSprint(project.id)}
@@ -83,7 +83,7 @@ export function Sprints() {
                         : 0
 
                     return (
-                      <div key={sprint.id} className="border border-line bg-white p-8">
+                      <div key={sprint.id} className="border border-line bg-white p-4 sm:p-6 lg:p-8">
                         <div className="flex items-center justify-between">
                           <div className="text-xs font-semibold uppercase tracking-widest text-mute">
                             Sprint {sprint.number}
@@ -105,7 +105,7 @@ export function Sprints() {
                           {sprint.startDate} → {sprint.endDate}
                         </p>
 
-                        <div className="mt-6 grid grid-cols-4 gap-8 border-t border-line pt-6">
+                        <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4 lg:gap-8 border-t border-line pt-6">
                           <div>
                             <div className="mb-1 text-xs uppercase tracking-wide text-mute">Committed</div>
                             <div className="text-2xl font-semibold">{sprint.committedPoints} pts</div>
