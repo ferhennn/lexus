@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { Project, Task, TaskPriority, TaskStatus } from '../lib/mockData'
 
 const seedProjects: Project[] = [
@@ -40,6 +41,27 @@ const seedTeams: Team[] = [
   },
 ]
 
+export type NotificationCategory = 'MENTIONS' | 'TASKS' | 'PROJECTS' | 'AI' | 'SYSTEM'
+
+export interface Notification {
+  id: number
+  category: NotificationCategory
+  text: string
+  time: string
+  read: boolean
+  archived: boolean
+}
+
+const seedNotifications: Notification[] = [
+  { id: 1, category: 'MENTIONS', text: 'Vidhi mentioned you in TASK-182', time: '12m ago', read: false, archived: false },
+  { id: 2, category: 'AI', text: 'AI detected a sprint risk', time: '1h ago', read: false, archived: false },
+  { id: 3, category: 'SYSTEM', text: 'Sprint 08 ends in 3 days', time: '3h ago', read: false, archived: false },
+  { id: 4, category: 'TASKS', text: 'Palak completed TASK-193', time: '5h ago', read: true, archived: false },
+  { id: 5, category: 'PROJECTS', text: 'You were added to AI Commerce Platform', time: '1d ago', read: true, archived: false },
+  { id: 6, category: 'AI', text: 'AI generated sprint documentation for Sprint 08', time: '1d ago', read: true, archived: false },
+  { id: 7, category: 'MENTIONS', text: 'Achal mentioned you in a comment on TASK-186', time: '2d ago', read: true, archived: false },
+]
+
 interface NewProjectInput {
   name: string
   description: string
@@ -58,6 +80,7 @@ interface AppState {
   projects: Project[]
   tasks: Task[]
   teams: Team[]
+  notifications: Notification[]
   taskCounter: number
   addProject: (input: NewProjectInput) => Project
   addTask: (input: NewTaskInput) => Task
@@ -68,12 +91,17 @@ interface AppState {
   removeMemberFromTeam: (teamId: string, memberId: string) => void
   assignProjectToTeam: (teamId: string, projectId: string) => void
   unassignProjectFromTeam: (teamId: string, projectId: string) => void
+  markNotificationRead: (id: number) => void
+  archiveNotification: (id: number) => void
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
   projects: seedProjects,
   tasks: seedTasks,
   teams: seedTeams,
+  notifications: seedNotifications,
   taskCounter: 191,
 
   addProject: (input) => {
@@ -166,4 +194,19 @@ export const useAppStore = create<AppState>((set, get) => ({
       ),
     }))
   },
-}))
+
+  markNotificationRead: (id) => {
+    set((state) => ({
+      notifications: state.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
+    }))
+  },
+
+  archiveNotification: (id) => {
+    set((state) => ({
+      notifications: state.notifications.map((n) => (n.id === id ? { ...n, archived: true } : n)),
+    }))
+  },
+    }),
+    { name: 'nexus-storage' },
+  ),
+)

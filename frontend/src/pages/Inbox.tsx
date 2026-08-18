@@ -1,25 +1,7 @@
 import { useState } from 'react'
+import { useAppStore, type NotificationCategory } from '../store/useAppStore'
 
-type Category = 'MENTIONS' | 'TASKS' | 'PROJECTS' | 'AI' | 'SYSTEM'
-
-interface Notification {
-  id: number
-  category: Category
-  text: string
-  time: string
-  read: boolean
-  archived: boolean
-}
-
-const initialNotifications: Notification[] = [
-  { id: 1, category: 'MENTIONS', text: 'Vidhi mentioned you in TASK-182', time: '12m ago', read: false, archived: false },
-  { id: 2, category: 'AI', text: 'AI detected a sprint risk', time: '1h ago', read: false, archived: false },
-  { id: 3, category: 'SYSTEM', text: 'Sprint 08 ends in 3 days', time: '3h ago', read: false, archived: false },
-  { id: 4, category: 'TASKS', text: 'Palak completed TASK-193', time: '5h ago', read: true, archived: false },
-  { id: 5, category: 'PROJECTS', text: 'You were added to AI Commerce Platform', time: '1d ago', read: true, archived: false },
-  { id: 6, category: 'AI', text: 'AI generated sprint documentation for Sprint 08', time: '1d ago', read: true, archived: false },
-  { id: 7, category: 'MENTIONS', text: 'Achal mentioned you in a comment on TASK-186', time: '2d ago', read: true, archived: false },
-]
+type Category = NotificationCategory
 
 const tabs: { key: 'ALL' | Category; label: string }[] = [
   { key: 'ALL', label: 'All' },
@@ -39,21 +21,15 @@ const categoryColor: Record<Category, string> = {
 }
 
 export function Inbox() {
-  const [notifications, setNotifications] = useState(initialNotifications)
+  const notifications = useAppStore((s) => s.notifications)
+  const markRead = useAppStore((s) => s.markNotificationRead)
+  const archive = useAppStore((s) => s.archiveNotification)
   const [tab, setTab] = useState<'ALL' | Category>('ALL')
 
   const visible = notifications.filter(
     (n) => !n.archived && (tab === 'ALL' || n.category === tab),
   )
   const unreadCount = notifications.filter((n) => !n.read && !n.archived).length
-
-  function markRead(id: number) {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
-  }
-
-  function archive(id: number) {
-    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, archived: true } : n)))
-  }
 
   return (
     <div className="px-16 py-12">
