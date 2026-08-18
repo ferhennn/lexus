@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { memberById } from '../lib/mockData'
 import { useAppStore } from '../store/useAppStore'
 import { NewProjectModal } from '../components/project/NewProjectModal'
+import { NewTaskModal } from '../components/task/NewTaskModal'
 
 const healthColor: Record<string, string> = {
   ON_TRACK: 'text-success',
@@ -19,6 +20,13 @@ export function Projects() {
   const projects = useAppStore((s) => s.projects)
   const teams = useAppStore((s) => s.teams)
   const [modalOpen, setModalOpen] = useState(false)
+  const [taskModalOpen, setTaskModalOpen] = useState(false)
+  const [taskProjectId, setTaskProjectId] = useState<string | undefined>(undefined)
+
+  function openNewTask(projectId: string) {
+    setTaskProjectId(projectId)
+    setTaskModalOpen(true)
+  }
 
   return (
     <div className="px-16 py-12">
@@ -42,8 +50,16 @@ export function Projects() {
 
           return (
           <div key={project.id} className="border border-line bg-white p-8">
-            <div className="text-xs font-semibold uppercase tracking-widest text-mute">
-              Project {String(i + 1).padStart(2, '0')}
+            <div className="flex items-center justify-between">
+              <div className="text-xs font-semibold uppercase tracking-widest text-mute">
+                Project {String(i + 1).padStart(2, '0')}
+              </div>
+              <button
+                onClick={() => openNewTask(project.id)}
+                className="rounded-md border border-line px-3 py-1.5 text-xs font-medium hover:bg-paper"
+              >
+                + Add Task
+              </button>
             </div>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight">{project.name}</h2>
             <p className="mt-2 max-w-xl text-sm text-mute">
@@ -101,6 +117,11 @@ export function Projects() {
       </div>
 
       <NewProjectModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <NewTaskModal
+        open={taskModalOpen}
+        onClose={() => setTaskModalOpen(false)}
+        defaultProjectId={taskProjectId}
+      />
     </div>
   )
 }

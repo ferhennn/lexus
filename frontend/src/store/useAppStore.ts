@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Project, Task, TaskPriority, TaskStatus } from '../lib/mockData'
+import type { Project, Sprint, SprintStatus, Task, TaskPriority, TaskStatus } from '../lib/mockData'
 
 const seedProjects: Project[] = [
   {
@@ -16,13 +16,26 @@ const seedProjects: Project[] = [
 ]
 
 const seedTasks: Task[] = [
-  { id: 'TASK-184', projectId: 'ai-commerce', title: 'Design authentication flow', status: 'DONE', priority: 'HIGH', storyPoints: 5, assigneeId: 'vidhi', labels: ['design', 'auth'] },
-  { id: 'TASK-185', projectId: 'ai-commerce', title: 'Create PostgreSQL schema', status: 'DONE', priority: 'HIGH', storyPoints: 3, assigneeId: 'achal', labels: ['backend', 'database'] },
-  { id: 'TASK-186', projectId: 'ai-commerce', title: 'Implement JWT authentication', status: 'IN_PROGRESS', priority: 'URGENT', storyPoints: 8, assigneeId: 'achal', labels: ['backend', 'security'] },
-  { id: 'TASK-187', projectId: 'ai-commerce', title: 'Build project dashboard', status: 'IN_REVIEW', priority: 'MEDIUM', storyPoints: 8, assigneeId: 'vidhi', labels: ['frontend'] },
-  { id: 'TASK-188', projectId: 'ai-commerce', title: 'Integrate payment API', status: 'TODO', priority: 'URGENT', storyPoints: 13, assigneeId: 'achal', labels: ['backend', 'payments'], blocked: true },
+  { id: 'TASK-184', projectId: 'ai-commerce', sprintId: 'ai-commerce-sprint-8', title: 'Design authentication flow', status: 'DONE', priority: 'HIGH', storyPoints: 5, assigneeId: 'vidhi', labels: ['design', 'auth'] },
+  { id: 'TASK-185', projectId: 'ai-commerce', sprintId: 'ai-commerce-sprint-8', title: 'Create PostgreSQL schema', status: 'DONE', priority: 'HIGH', storyPoints: 3, assigneeId: 'achal', labels: ['backend', 'database'] },
+  { id: 'TASK-186', projectId: 'ai-commerce', sprintId: 'ai-commerce-sprint-8', title: 'Implement JWT authentication', status: 'IN_PROGRESS', priority: 'URGENT', storyPoints: 8, assigneeId: 'achal', labels: ['backend', 'security'] },
+  { id: 'TASK-187', projectId: 'ai-commerce', sprintId: 'ai-commerce-sprint-8', title: 'Build project dashboard', status: 'IN_REVIEW', priority: 'MEDIUM', storyPoints: 8, assigneeId: 'vidhi', labels: ['frontend'] },
+  { id: 'TASK-188', projectId: 'ai-commerce', sprintId: 'ai-commerce-sprint-8', title: 'Integrate payment API', status: 'TODO', priority: 'URGENT', storyPoints: 13, assigneeId: 'achal', labels: ['backend', 'payments'], blocked: true },
   { id: 'TASK-189', projectId: 'ai-commerce', title: 'Write API documentation', status: 'TODO', priority: 'LOW', storyPoints: 3, assigneeId: 'devendra', labels: ['docs'], aiGenerated: true },
-  { id: 'TASK-190', projectId: 'ai-commerce', title: 'Create QA test suite', status: 'TESTING', priority: 'HIGH', storyPoints: 5, assigneeId: 'palak', labels: ['qa'] },
+  { id: 'TASK-190', projectId: 'ai-commerce', sprintId: 'ai-commerce-sprint-8', title: 'Create QA test suite', status: 'TESTING', priority: 'HIGH', storyPoints: 5, assigneeId: 'palak', labels: ['qa'] },
+]
+
+const seedSprints: Sprint[] = [
+  {
+    id: 'ai-commerce-sprint-8',
+    projectId: 'ai-commerce',
+    number: 8,
+    goal: 'Launch the billing foundation.',
+    startDate: '2026-08-18',
+    endDate: '2026-08-29',
+    committedPoints: 42,
+    status: 'ACTIVE',
+  },
 ]
 
 export interface Team {
@@ -70,16 +83,26 @@ interface NewProjectInput {
 interface NewTaskInput {
   title: string
   projectId: string
+  sprintId?: string
   status: TaskStatus
   priority: TaskPriority
   storyPoints: number
   assigneeId: string
 }
 
+interface NewSprintInput {
+  projectId: string
+  goal: string
+  startDate: string
+  endDate: string
+  committedPoints: number
+}
+
 interface AppState {
   projects: Project[]
   tasks: Task[]
   teams: Team[]
+  sprints: Sprint[]
   notifications: Notification[]
   taskCounter: number
   addProject: (input: NewProjectInput) => Project
@@ -93,6 +116,8 @@ interface AppState {
   unassignProjectFromTeam: (teamId: string, projectId: string) => void
   markNotificationRead: (id: number) => void
   archiveNotification: (id: number) => void
+  addSprint: (input: NewSprintInput) => Sprint
+  setSprintStatus: (sprintId: string, status: SprintStatus) => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -101,6 +126,7 @@ export const useAppStore = create<AppState>()(
   projects: seedProjects,
   tasks: seedTasks,
   teams: seedTeams,
+  sprints: seedSprints,
   notifications: seedNotifications,
   taskCounter: 191,
 
@@ -124,6 +150,7 @@ export const useAppStore = create<AppState>()(
     const newTask: Task = {
       id,
       projectId: input.projectId,
+      sprintId: input.sprintId,
       title: input.title,
       status: input.status,
       priority: input.priority,
@@ -204,6 +231,34 @@ export const useAppStore = create<AppState>()(
   archiveNotification: (id) => {
     set((state) => ({
       notifications: state.notifications.map((n) => (n.id === id ? { ...n, archived: true } : n)),
+    }))
+  },
+
+  addSprint: (input) => {
+    const existingForProject = get().sprints.filter((s) => s.projectId === input.projectId)
+    const number = existingForProject.length + 1
+    const newSprint: Sprint = {
+      id: `${input.projectId}-sprint-${number}`,
+      projectId: input.projectId,
+      number,
+      goal: input.goal,
+      startDate: input.startDate,
+      endDate: input.endDate,
+      committedPoints: input.committedPoints,
+      status: 'PLANNED',
+    }
+    set((state) => ({
+      sprints: [...state.sprints, newSprint],
+      projects: state.projects.map((p) =>
+        p.id === input.projectId ? { ...p, sprintNumber: number } : p,
+      ),
+    }))
+    return newSprint
+  },
+
+  setSprintStatus: (sprintId, status) => {
+    set((state) => ({
+      sprints: state.sprints.map((s) => (s.id === sprintId ? { ...s, status } : s)),
     }))
   },
     }),

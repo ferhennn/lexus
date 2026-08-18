@@ -1,11 +1,27 @@
-import { sprint, members, activity, aiBrief } from '../lib/mockData'
+import { members, activity, aiBrief, velocity } from '../lib/mockData'
 import { useAppStore } from '../store/useAppStore'
 
 export function Home() {
   const tasks = useAppStore((s) => s.tasks)
+  const sprints = useAppStore((s) => s.sprints)
   const dueToday = tasks.filter((t) => t.status === 'IN_PROGRESS' || t.status === 'IN_REVIEW')
   const blocked = tasks.filter((t) => t.blocked)
   const highPriority = tasks.filter((t) => t.priority === 'URGENT' || t.priority === 'HIGH')
+
+  const activeSprint =
+    sprints.find((s) => s.status === 'ACTIVE') ?? sprints[sprints.length - 1]
+  const sprintCompletedPoints = activeSprint
+    ? tasks
+        .filter((t) => t.sprintId === activeSprint.id && t.status === 'DONE')
+        .reduce((sum, t) => sum + t.storyPoints, 0)
+    : 0
+  const sprintRemainingPoints = activeSprint
+    ? Math.max(activeSprint.committedPoints - sprintCompletedPoints, 0)
+    : 0
+  const sprintPct =
+    activeSprint && activeSprint.committedPoints > 0
+      ? Math.round((sprintCompletedPoints / activeSprint.committedPoints) * 100)
+      : 0
 
   return (
     <div className="px-16 py-12">
@@ -50,24 +66,25 @@ export function Home() {
           <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-white/50">
             Sprint Health
           </h2>
-          <div className="text-3xl font-semibold tracking-tight">SPRINT {sprint.number}</div>
-          <div className="mt-4 h-1.5 w-full rounded-full bg-white/15">
-            <div
-              className="h-1.5 rounded-full bg-accent"
-              style={{ width: `${Math.round((sprint.completedPoints / sprint.committedPoints) * 100)}%` }}
-            />
-          </div>
-          <div className="mt-2 text-sm text-white/70">
-            {Math.round((sprint.completedPoints / sprint.committedPoints) * 100)}% complete
-          </div>
-          <div className="mt-6 grid grid-cols-2 gap-y-2 text-sm">
-            <div className="text-white/50">Completed</div>
-            <div className="text-right">{sprint.completedPoints}</div>
-            <div className="text-white/50">Remaining</div>
-            <div className="text-right">{sprint.remainingPoints}</div>
-            <div className="text-white/50">Velocity</div>
-            <div className="text-right">{sprint.velocity}</div>
-          </div>
+          {activeSprint ? (
+            <>
+              <div className="text-3xl font-semibold tracking-tight">SPRINT {activeSprint.number}</div>
+              <div className="mt-4 h-1.5 w-full rounded-full bg-white/15">
+                <div className="h-1.5 rounded-full bg-accent" style={{ width: `${sprintPct}%` }} />
+              </div>
+              <div className="mt-2 text-sm text-white/70">{sprintPct}% complete</div>
+              <div className="mt-6 grid grid-cols-2 gap-y-2 text-sm">
+                <div className="text-white/50">Completed</div>
+                <div className="text-right">{sprintCompletedPoints}</div>
+                <div className="text-white/50">Remaining</div>
+                <div className="text-right">{sprintRemainingPoints}</div>
+                <div className="text-white/50">Velocity</div>
+                <div className="text-right">{velocity}</div>
+              </div>
+            </>
+          ) : (
+            <p className="mt-4 text-sm text-white/70">No sprint yet. Create one from the Sprints page.</p>
+          )}
         </section>
       </div>
 

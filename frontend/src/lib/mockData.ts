@@ -19,6 +19,7 @@ export interface Member {
 export interface Task {
   id: string
   projectId: string
+  sprintId?: string
   title: string
   status: TaskStatus
   priority: TaskPriority
@@ -27,6 +28,19 @@ export interface Task {
   labels: string[]
   aiGenerated?: boolean
   blocked?: boolean
+}
+
+export type SprintStatus = 'PLANNED' | 'ACTIVE' | 'COMPLETED'
+
+export interface Sprint {
+  id: string
+  projectId: string
+  number: number
+  goal: string
+  startDate: string
+  endDate: string
+  committedPoints: number
+  status: SprintStatus
 }
 
 export interface Project {
@@ -47,16 +61,7 @@ export const members: Member[] = [
   { id: 'palak', name: 'Palak', initials: 'PL', role: 'QA Engineer', utilization: 43 },
 ]
 
-export const sprint = {
-  number: 8,
-  goal: 'Launch the billing foundation.',
-  startDate: '2026-08-18',
-  endDate: '2026-08-29',
-  committedPoints: 42,
-  completedPoints: 31,
-  remainingPoints: 11,
-  velocity: 38,
-}
+export const velocity = 38
 
 export const activity = [
   { id: 1, text: 'Palak completed TASK-193', time: '2h ago' },

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Modal } from '../ui/Modal'
 import { useAppStore } from '../../store/useAppStore'
 import { members } from '../../lib/mockData'
@@ -11,27 +11,54 @@ export function NewTaskModal({
   open,
   onClose,
   defaultStatus = 'BACKLOG',
+  defaultProjectId,
 }: {
   open: boolean
   onClose: () => void
   defaultStatus?: TaskStatus
+  defaultProjectId?: string
 }) {
   const projects = useAppStore((s) => s.projects)
+  const sprints = useAppStore((s) => s.sprints)
   const addTask = useAppStore((s) => s.addTask)
 
   const [title, setTitle] = useState('')
-  const [projectId, setProjectId] = useState(projects[0]?.id ?? '')
+  const [projectId, setProjectId] = useState(defaultProjectId ?? projects[0]?.id ?? '')
+  const [sprintId, setSprintId] = useState('')
   const [status, setStatus] = useState<TaskStatus>(defaultStatus)
   const [priority, setPriority] = useState<TaskPriority>('MEDIUM')
   const [storyPoints, setStoryPoints] = useState(3)
   const [assigneeId, setAssigneeId] = useState(members[0].id)
 
+  const projectSprints = sprints.filter((s) => s.projectId === projectId)
+
+  useEffect(() => {
+    if (open && defaultProjectId) {
+      setProjectId(defaultProjectId)
+    }
+  }, [open, defaultProjectId])
+
+  useEffect(() => {
+    if (!projectSprints.some((s) => s.id === sprintId)) {
+      setSprintId('')
+    }
+  }, [projectId])
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim() || !projectId) return
-    addTask({ title: title.trim(), projectId, status, priority, storyPoints, assigneeId })
+    addTask({
+      title: title.trim(),
+      projectId,
+      sprintId: sprintId || undefined,
+      status,
+      priority,
+      storyPoints,
+      assigneeId,
+    })
     setTitle('')
     setStoryPoints(3)
+    setSprintId('')
     onClose()
   }
 
@@ -63,6 +90,24 @@ export function NewTaskModal({
             {projects.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
+            Sprint
+          </label>
+          <select
+            value={sprintId}
+            onChange={(e) => setSprintId(e.target.value)}
+            className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
+          >
+            <option value="">Backlog (no sprint)</option>
+            {projectSprints.map((s) => (
+              <option key={s.id} value={s.id}>
+                Sprint {s.number}
               </option>
             ))}
           </select>
