@@ -4,6 +4,7 @@ import { useAppStore } from '../store/useAppStore'
 export function Home() {
   const tasks = useAppStore((s) => s.tasks)
   const sprints = useAppStore((s) => s.sprints)
+  const displayName = useAppStore((s) => s.settings.displayName)
   const dueToday = tasks.filter((t) => t.status === 'IN_PROGRESS' || t.status === 'IN_REVIEW')
   const blocked = tasks.filter((t) => t.blocked)
   const highPriority = tasks.filter((t) => t.priority === 'URGENT' || t.priority === 'HIGH')
@@ -31,7 +32,7 @@ export function Home() {
       <h1 className="text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
         GOOD MORNING,
         <br />
-        DEVENDRA.
+        {displayName.toUpperCase()}.
       </h1>
       <p className="mt-3 text-base text-mute">Here's what needs your attention.</p>
 

@@ -24,12 +24,14 @@ export function Inbox() {
   const notifications = useAppStore((s) => s.notifications)
   const markRead = useAppStore((s) => s.markNotificationRead)
   const archive = useAppStore((s) => s.archiveNotification)
+  const mutedCategories = useAppStore((s) => s.settings.mutedCategories)
   const [tab, setTab] = useState<'ALL' | Category>('ALL')
 
-  const visible = notifications.filter(
+  const unmuted = notifications.filter((n) => !mutedCategories.includes(n.category))
+  const visible = unmuted.filter(
     (n) => !n.archived && (tab === 'ALL' || n.category === tab),
   )
-  const unreadCount = notifications.filter((n) => !n.read && !n.archived).length
+  const unreadCount = unmuted.filter((n) => !n.read && !n.archived).length
 
   return (
     <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">

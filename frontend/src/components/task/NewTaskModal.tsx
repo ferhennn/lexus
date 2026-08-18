@@ -21,6 +21,7 @@ export function NewTaskModal({
   const projects = useAppStore((s) => s.projects)
   const sprints = useAppStore((s) => s.sprints)
   const addTask = useAppStore((s) => s.addTask)
+  const defaultAssigneeId = useAppStore((s) => s.settings.defaultAssigneeId)
 
   const [title, setTitle] = useState('')
   const [projectId, setProjectId] = useState(defaultProjectId ?? projects[0]?.id ?? '')
@@ -28,7 +29,7 @@ export function NewTaskModal({
   const [status, setStatus] = useState<TaskStatus>(defaultStatus)
   const [priority, setPriority] = useState<TaskPriority>('MEDIUM')
   const [storyPoints, setStoryPoints] = useState(3)
-  const [assigneeId, setAssigneeId] = useState(members[0].id)
+  const [assigneeId, setAssigneeId] = useState(defaultAssigneeId)
 
   const projectSprints = sprints.filter((s) => s.projectId === projectId)
 
@@ -37,6 +38,12 @@ export function NewTaskModal({
       setProjectId(defaultProjectId)
     }
   }, [open, defaultProjectId])
+
+  useEffect(() => {
+    if (open) {
+      setAssigneeId(defaultAssigneeId)
+    }
+  }, [open, defaultAssigneeId])
 
   useEffect(() => {
     if (!projectSprints.some((s) => s.id === sprintId)) {

@@ -98,12 +98,27 @@ interface NewSprintInput {
   committedPoints: number
 }
 
+export interface Settings {
+  displayName: string
+  role: string
+  defaultAssigneeId: string
+  mutedCategories: NotificationCategory[]
+}
+
+const defaultSettings: Settings = {
+  displayName: 'Devendra',
+  role: 'Project Manager',
+  defaultAssigneeId: 'devendra',
+  mutedCategories: [],
+}
+
 interface AppState {
   projects: Project[]
   tasks: Task[]
   teams: Team[]
   sprints: Sprint[]
   notifications: Notification[]
+  settings: Settings
   taskCounter: number
   addProject: (input: NewProjectInput) => Project
   addTask: (input: NewTaskInput) => Task
@@ -118,6 +133,9 @@ interface AppState {
   archiveNotification: (id: number) => void
   addSprint: (input: NewSprintInput) => Sprint
   setSprintStatus: (sprintId: string, status: SprintStatus) => void
+  updateSettings: (input: Partial<Pick<Settings, 'displayName' | 'role' | 'defaultAssigneeId'>>) => void
+  toggleMutedCategory: (category: NotificationCategory) => void
+  resetWorkspace: () => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -128,6 +146,7 @@ export const useAppStore = create<AppState>()(
   teams: seedTeams,
   sprints: seedSprints,
   notifications: seedNotifications,
+  settings: defaultSettings,
   taskCounter: 191,
 
   addProject: (input) => {
@@ -260,6 +279,33 @@ export const useAppStore = create<AppState>()(
     set((state) => ({
       sprints: state.sprints.map((s) => (s.id === sprintId ? { ...s, status } : s)),
     }))
+  },
+
+  updateSettings: (input) => {
+    set((state) => ({ settings: { ...state.settings, ...input } }))
+  },
+
+  toggleMutedCategory: (category) => {
+    set((state) => ({
+      settings: {
+        ...state.settings,
+        mutedCategories: state.settings.mutedCategories.includes(category)
+          ? state.settings.mutedCategories.filter((c) => c !== category)
+          : [...state.settings.mutedCategories, category],
+      },
+    }))
+  },
+
+  resetWorkspace: () => {
+    set({
+      projects: seedProjects,
+      tasks: seedTasks,
+      teams: seedTeams,
+      sprints: seedSprints,
+      notifications: seedNotifications,
+      settings: defaultSettings,
+      taskCounter: 191,
+    })
   },
     }),
     { name: 'nexus-storage' },
