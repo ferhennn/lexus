@@ -61,6 +61,35 @@ const seedTeams: Team[] = [
   },
 ]
 
+export interface WikiPage {
+  id: string
+  title: string
+  content: string
+  projectId?: string
+  author: string
+  updatedAt: string
+}
+
+const seedWikiPages: WikiPage[] = [
+  {
+    id: 'onboarding',
+    title: 'Engineering Onboarding',
+    content:
+      'Welcome to the team.\n\n1. Clone the repo and run `npm install` in frontend/.\n2. Copy .env.example to .env and fill in local Postgres/Redis creds.\n3. Run `npm run dev` and check http://localhost:5173.\n4. Read the API auth doc before touching the backend.',
+    author: 'Devendra',
+    updatedAt: '2026-08-10T09:00:00.000Z',
+  },
+  {
+    id: 'api-auth',
+    title: 'API Authentication',
+    content:
+      'JWT tokens are issued on login and expire after 24h. Attach as `Authorization: Bearer <token>`. Refresh tokens are not implemented yet — re-login on expiry.',
+    projectId: 'ai-commerce',
+    author: 'Achal',
+    updatedAt: '2026-08-15T14:30:00.000Z',
+  },
+]
+
 export type NotificationCategory = 'MENTIONS' | 'TASKS' | 'PROJECTS' | 'AI' | 'SYSTEM'
 
 export interface Notification {
@@ -110,6 +139,12 @@ interface NewMemberInput {
   role: string
 }
 
+interface NewWikiPageInput {
+  title: string
+  content: string
+  projectId?: string
+}
+
 export interface Settings {
   displayName: string
   role: string
@@ -131,9 +166,13 @@ interface AppState {
   sprints: Sprint[]
   notifications: Notification[]
   members: Member[]
+  wikiPages: WikiPage[]
   settings: Settings
   taskCounter: number
   addMember: (input: NewMemberInput) => Member
+  addWikiPage: (input: NewWikiPageInput) => WikiPage
+  updateWikiPage: (id: string, input: { title: string; content: string }) => void
+  deleteWikiPage: (id: string) => void
   addProject: (input: NewProjectInput) => Project
   addTask: (input: NewTaskInput) => Task
   updateTaskStatus: (id: string, status: TaskStatus) => void
@@ -161,8 +200,37 @@ export const useAppStore = create<AppState>()(
   sprints: seedSprints,
   notifications: seedNotifications,
   members: seedMembers,
+  wikiPages: seedWikiPages,
   settings: defaultSettings,
   taskCounter: 191,
+
+  addWikiPage: (input) => {
+    const id = input.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `page-${Date.now()}`
+    const newPage: WikiPage = {
+      id,
+      title: input.title,
+      content: input.content,
+      projectId: input.projectId,
+      author: get().settings.displayName,
+      updatedAt: new Date().toISOString(),
+    }
+    set((state) => ({ wikiPages: [...state.wikiPages, newPage] }))
+    return newPage
+  },
+
+  updateWikiPage: (id, input) => {
+    set((state) => ({
+      wikiPages: state.wikiPages.map((p) =>
+        p.id === id
+          ? { ...p, title: input.title, content: input.content, updatedAt: new Date().toISOString() }
+          : p,
+      ),
+    }))
+  },
+
+  deleteWikiPage: (id) => {
+    set((state) => ({ wikiPages: state.wikiPages.filter((p) => p.id !== id) }))
+  },
 
   addMember: (input) => {
     const id = input.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `member-${Date.now()}`
@@ -333,6 +401,7 @@ export const useAppStore = create<AppState>()(
       sprints: seedSprints,
       notifications: seedNotifications,
       members: seedMembers,
+      wikiPages: seedWikiPages,
       settings: defaultSettings,
       taskCounter: 191,
     })
