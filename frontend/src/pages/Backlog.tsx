@@ -1,0 +1,78 @@
+import { useState } from 'react'
+import { memberById } from '../lib/mockData'
+import { useAppStore } from '../store/useAppStore'
+import { NewTaskModal } from '../components/task/NewTaskModal'
+
+const priorityColor: Record<string, string> = {
+  URGENT: 'text-danger',
+  HIGH: 'text-warning',
+  MEDIUM: 'text-info',
+  LOW: 'text-mute',
+}
+
+export function Backlog() {
+  const tasks = useAppStore((s) => s.tasks)
+  const [modalOpen, setModalOpen] = useState(false)
+
+  return (
+    <div className="px-16 py-12">
+      <div className="mb-1 flex items-center justify-between">
+        <div className="text-xs font-medium uppercase tracking-widest text-mute">
+          Delivery
+        </div>
+        <button
+          onClick={() => setModalOpen(true)}
+          className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-black"
+        >
+          + New Task
+        </button>
+      </div>
+      <h1 className="text-5xl font-semibold tracking-tight text-ink">Backlog</h1>
+
+      <div className="mt-10 border border-line bg-white">
+        <div className="grid grid-cols-[100px_1fr_120px_100px_100px_140px] border-b border-line bg-paper px-4 py-2 text-xs font-semibold uppercase tracking-wide text-mute">
+          <span>ID</span>
+          <span>Title</span>
+          <span>Status</span>
+          <span>Priority</span>
+          <span>Points</span>
+          <span>Assignee</span>
+        </div>
+        {tasks.map((t) => {
+          const assignee = memberById(t.assigneeId)
+          return (
+            <div
+              key={t.id}
+              className="grid grid-cols-[100px_1fr_120px_100px_100px_140px] items-center border-b border-line px-4 py-3 text-sm last:border-0 hover:bg-paper/60"
+            >
+              <span className="font-mono text-xs text-mute">{t.id}</span>
+              <span className="flex items-center gap-2">
+                {t.title}
+                {t.aiGenerated && (
+                  <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-semibold text-ink">
+                    AI
+                  </span>
+                )}
+              </span>
+              <span className="text-xs text-mute">{t.status.replace('_', ' ')}</span>
+              <span className={`text-xs font-medium ${priorityColor[t.priority]}`}>
+                {t.priority}
+              </span>
+              <span className="text-xs text-mute">{t.storyPoints}</span>
+              <span className="flex items-center gap-2 text-xs text-mute">
+                {assignee && (
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-ink text-[9px] font-medium text-white">
+                    {assignee.initials}
+                  </div>
+                )}
+                {assignee?.name}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      <NewTaskModal open={modalOpen} onClose={() => setModalOpen(false)} />
+    </div>
+  )
+}
