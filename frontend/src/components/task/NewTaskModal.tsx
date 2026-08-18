@@ -1,0 +1,155 @@
+import { useState } from 'react'
+import { Modal } from '../ui/Modal'
+import { useAppStore } from '../../store/useAppStore'
+import { members } from '../../lib/mockData'
+import type { TaskPriority, TaskStatus } from '../../lib/mockData'
+
+const statuses: TaskStatus[] = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'TESTING', 'DONE']
+const priorities: TaskPriority[] = ['LOW', 'MEDIUM', 'HIGH', 'URGENT']
+
+export function NewTaskModal({
+  open,
+  onClose,
+  defaultStatus = 'BACKLOG',
+}: {
+  open: boolean
+  onClose: () => void
+  defaultStatus?: TaskStatus
+}) {
+  const projects = useAppStore((s) => s.projects)
+  const addTask = useAppStore((s) => s.addTask)
+
+  const [title, setTitle] = useState('')
+  const [projectId, setProjectId] = useState(projects[0]?.id ?? '')
+  const [status, setStatus] = useState<TaskStatus>(defaultStatus)
+  const [priority, setPriority] = useState<TaskPriority>('MEDIUM')
+  const [storyPoints, setStoryPoints] = useState(3)
+  const [assigneeId, setAssigneeId] = useState(members[0].id)
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!title.trim() || !projectId) return
+    addTask({ title: title.trim(), projectId, status, priority, storyPoints, assigneeId })
+    setTitle('')
+    setStoryPoints(3)
+    onClose()
+  }
+
+  return (
+    <Modal open={open} onClose={onClose} title="New Task">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div>
+          <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
+            Title
+          </label>
+          <input
+            autoFocus
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
+            placeholder="Integrate payment API"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
+            Project
+          </label>
+          <select
+            value={projectId}
+            onChange={(e) => setProjectId(e.target.value)}
+            className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
+          >
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
+              Status
+            </label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value as TaskStatus)}
+              className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
+            >
+              {statuses.map((s) => (
+                <option key={s} value={s}>
+                  {s.replace('_', ' ')}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
+              Priority
+            </label>
+            <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as TaskPriority)}
+              className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
+            >
+              {priorities.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
+              Story Points
+            </label>
+            <input
+              type="number"
+              min={0}
+              value={storyPoints}
+              onChange={(e) => setStoryPoints(Number(e.target.value))}
+              className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
+              Assignee
+            </label>
+            <select
+              value={assigneeId}
+              onChange={(e) => setAssigneeId(e.target.value)}
+              className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
+            >
+              {members.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="mt-2 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-md border border-line px-4 py-2 text-sm font-medium hover:bg-paper"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-black"
+          >
+            Create Task
+          </button>
+        </div>
+      </form>
+    </Modal>
+  )
+}

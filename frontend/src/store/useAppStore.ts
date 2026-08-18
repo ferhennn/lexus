@@ -1,0 +1,94 @@
+import { create } from 'zustand'
+import type { Project, Task, TaskPriority, TaskStatus } from '../lib/mockData'
+
+const seedProjects: Project[] = [
+  {
+    id: 'ai-commerce',
+    name: 'AI Commerce Platform',
+    description: 'Building an intelligent commerce platform for independent retailers.',
+    status: 'ACTIVE',
+    health: 'ON_TRACK',
+    progress: 68,
+    sprintNumber: 8,
+    memberCount: 12,
+  },
+]
+
+const seedTasks: Task[] = [
+  { id: 'TASK-184', projectId: 'ai-commerce', title: 'Design authentication flow', status: 'DONE', priority: 'HIGH', storyPoints: 5, assigneeId: 'vidhi', labels: ['design', 'auth'] },
+  { id: 'TASK-185', projectId: 'ai-commerce', title: 'Create PostgreSQL schema', status: 'DONE', priority: 'HIGH', storyPoints: 3, assigneeId: 'achal', labels: ['backend', 'database'] },
+  { id: 'TASK-186', projectId: 'ai-commerce', title: 'Implement JWT authentication', status: 'IN_PROGRESS', priority: 'URGENT', storyPoints: 8, assigneeId: 'achal', labels: ['backend', 'security'] },
+  { id: 'TASK-187', projectId: 'ai-commerce', title: 'Build project dashboard', status: 'IN_REVIEW', priority: 'MEDIUM', storyPoints: 8, assigneeId: 'vidhi', labels: ['frontend'] },
+  { id: 'TASK-188', projectId: 'ai-commerce', title: 'Integrate payment API', status: 'TODO', priority: 'URGENT', storyPoints: 13, assigneeId: 'achal', labels: ['backend', 'payments'], blocked: true },
+  { id: 'TASK-189', projectId: 'ai-commerce', title: 'Write API documentation', status: 'TODO', priority: 'LOW', storyPoints: 3, assigneeId: 'devendra', labels: ['docs'], aiGenerated: true },
+  { id: 'TASK-190', projectId: 'ai-commerce', title: 'Create QA test suite', status: 'TESTING', priority: 'HIGH', storyPoints: 5, assigneeId: 'palak', labels: ['qa'] },
+]
+
+interface NewProjectInput {
+  name: string
+  description: string
+}
+
+interface NewTaskInput {
+  title: string
+  projectId: string
+  status: TaskStatus
+  priority: TaskPriority
+  storyPoints: number
+  assigneeId: string
+}
+
+interface AppState {
+  projects: Project[]
+  tasks: Task[]
+  taskCounter: number
+  addProject: (input: NewProjectInput) => Project
+  addTask: (input: NewTaskInput) => Task
+  updateTaskStatus: (id: string, status: TaskStatus) => void
+}
+
+export const useAppStore = create<AppState>((set, get) => ({
+  projects: seedProjects,
+  tasks: seedTasks,
+  taskCounter: 191,
+
+  addProject: (input) => {
+    const newProject: Project = {
+      id: input.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `project-${Date.now()}`,
+      name: input.name,
+      description: input.description,
+      status: 'PLANNING',
+      health: 'ON_TRACK',
+      progress: 0,
+      sprintNumber: 0,
+      memberCount: 1,
+    }
+    set((state) => ({ projects: [...state.projects, newProject] }))
+    return newProject
+  },
+
+  addTask: (input) => {
+    const id = `TASK-${get().taskCounter}`
+    const newTask: Task = {
+      id,
+      projectId: input.projectId,
+      title: input.title,
+      status: input.status,
+      priority: input.priority,
+      storyPoints: input.storyPoints,
+      assigneeId: input.assigneeId,
+      labels: [],
+    }
+    set((state) => ({
+      tasks: [...state.tasks, newTask],
+      taskCounter: state.taskCounter + 1,
+    }))
+    return newTask
+  },
+
+  updateTaskStatus: (id, status) => {
+    set((state) => ({
+      tasks: state.tasks.map((t) => (t.id === id ? { ...t, status } : t)),
+    }))
+  },
+}))
