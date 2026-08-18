@@ -24,6 +24,22 @@ const seedTasks: Task[] = [
   { id: 'TASK-190', projectId: 'ai-commerce', title: 'Create QA test suite', status: 'TESTING', priority: 'HIGH', storyPoints: 5, assigneeId: 'palak', labels: ['qa'] },
 ]
 
+export interface Team {
+  id: string
+  name: string
+  memberIds: string[]
+  projectIds: string[]
+}
+
+const seedTeams: Team[] = [
+  {
+    id: 'core-engineering',
+    name: 'Core Engineering',
+    memberIds: ['devendra', 'achal', 'vidhi', 'palak'],
+    projectIds: ['ai-commerce'],
+  },
+]
+
 interface NewProjectInput {
   name: string
   description: string
@@ -41,15 +57,23 @@ interface NewTaskInput {
 interface AppState {
   projects: Project[]
   tasks: Task[]
+  teams: Team[]
   taskCounter: number
   addProject: (input: NewProjectInput) => Project
   addTask: (input: NewTaskInput) => Task
   updateTaskStatus: (id: string, status: TaskStatus) => void
+  addTeam: (name: string) => Team
+  deleteTeam: (teamId: string) => void
+  addMemberToTeam: (teamId: string, memberId: string) => void
+  removeMemberFromTeam: (teamId: string, memberId: string) => void
+  assignProjectToTeam: (teamId: string, projectId: string) => void
+  unassignProjectFromTeam: (teamId: string, projectId: string) => void
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
   projects: seedProjects,
   tasks: seedTasks,
+  teams: seedTeams,
   taskCounter: 191,
 
   addProject: (input) => {
@@ -89,6 +113,57 @@ export const useAppStore = create<AppState>((set, get) => ({
   updateTaskStatus: (id, status) => {
     set((state) => ({
       tasks: state.tasks.map((t) => (t.id === id ? { ...t, status } : t)),
+    }))
+  },
+
+  addTeam: (name) => {
+    const newTeam: Team = {
+      id: name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `team-${Date.now()}`,
+      name,
+      memberIds: [],
+      projectIds: [],
+    }
+    set((state) => ({ teams: [...state.teams, newTeam] }))
+    return newTeam
+  },
+
+  deleteTeam: (teamId) => {
+    set((state) => ({ teams: state.teams.filter((t) => t.id !== teamId) }))
+  },
+
+  addMemberToTeam: (teamId, memberId) => {
+    set((state) => ({
+      teams: state.teams.map((t) =>
+        t.id === teamId && !t.memberIds.includes(memberId)
+          ? { ...t, memberIds: [...t.memberIds, memberId] }
+          : t,
+      ),
+    }))
+  },
+
+  removeMemberFromTeam: (teamId, memberId) => {
+    set((state) => ({
+      teams: state.teams.map((t) =>
+        t.id === teamId ? { ...t, memberIds: t.memberIds.filter((id) => id !== memberId) } : t,
+      ),
+    }))
+  },
+
+  assignProjectToTeam: (teamId, projectId) => {
+    set((state) => ({
+      teams: state.teams.map((t) =>
+        t.id === teamId && !t.projectIds.includes(projectId)
+          ? { ...t, projectIds: [...t.projectIds, projectId] }
+          : t,
+      ),
+    }))
+  },
+
+  unassignProjectFromTeam: (teamId, projectId) => {
+    set((state) => ({
+      teams: state.teams.map((t) =>
+        t.id === teamId ? { ...t, projectIds: t.projectIds.filter((id) => id !== projectId) } : t,
+      ),
     }))
   },
 }))
