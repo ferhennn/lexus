@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { members } from '../lib/mockData'
+import { memberById } from '../lib/mockData'
 import { useAppStore } from '../store/useAppStore'
 import { NewProjectModal } from '../components/project/NewProjectModal'
 
@@ -17,6 +17,7 @@ const healthLabel: Record<string, string> = {
 
 export function Projects() {
   const projects = useAppStore((s) => s.projects)
+  const teams = useAppStore((s) => s.teams)
   const [modalOpen, setModalOpen] = useState(false)
 
   return (
@@ -35,7 +36,11 @@ export function Projects() {
       <h1 className="text-5xl font-semibold tracking-tight text-ink">Projects</h1>
 
       <div className="mt-12 flex flex-col gap-6">
-        {projects.map((project, i) => (
+        {projects.map((project, i) => {
+          const team = teams.find((t) => t.projectIds.includes(project.id))
+          const teamMembers = team ? team.memberIds.map(memberById).filter(Boolean) : []
+
+          return (
           <div key={project.id} className="border border-line bg-white p-8">
             <div className="text-xs font-semibold uppercase tracking-widest text-mute">
               Project {String(i + 1).padStart(2, '0')}
@@ -68,21 +73,31 @@ export function Projects() {
               </div>
               <div>
                 <div className="mb-1 text-xs uppercase tracking-wide text-mute">Team</div>
-                <div className="flex -space-x-2">
-                  {members.slice(0, 4).map((m) => (
-                    <div
-                      key={m.id}
-                      title={m.name}
-                      className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-ink text-xs font-medium text-white"
-                    >
-                      {m.initials}
+                {team ? (
+                  <>
+                    <div className="text-sm font-medium">{team.name}</div>
+                    <div className="mt-1 flex -space-x-2">
+                      {teamMembers.map((m) =>
+                        m ? (
+                          <div
+                            key={m.id}
+                            title={m.name}
+                            className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-ink text-xs font-medium text-white"
+                          >
+                            {m.initials}
+                          </div>
+                        ) : null,
+                      )}
                     </div>
-                  ))}
-                </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-mute">Unassigned</div>
+                )}
               </div>
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
 
       <NewProjectModal open={modalOpen} onClose={() => setModalOpen(false)} />

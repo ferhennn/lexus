@@ -4,15 +4,23 @@ import { useAppStore } from '../../store/useAppStore'
 
 export function NewProjectModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const addProject = useAppStore((s) => s.addProject)
+  const assignProjectToTeam = useAppStore((s) => s.assignProjectToTeam)
+  const teams = useAppStore((s) => s.teams)
+
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [teamId, setTeamId] = useState('')
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) return
-    addProject({ name: name.trim(), description: description.trim() })
+    const project = addProject({ name: name.trim(), description: description.trim() })
+    if (teamId) {
+      assignProjectToTeam(teamId, project.id)
+    }
     setName('')
     setDescription('')
+    setTeamId('')
     onClose()
   }
 
@@ -42,6 +50,23 @@ export function NewProjectModal({ open, onClose }: { open: boolean; onClose: () 
             className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
             placeholder="What are you building?"
           />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
+            Team
+          </label>
+          <select
+            value={teamId}
+            onChange={(e) => setTeamId(e.target.value)}
+            className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
+          >
+            <option value="">No team</option>
+            {teams.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mt-2 flex justify-end gap-2">
           <button
