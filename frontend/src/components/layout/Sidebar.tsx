@@ -1,22 +1,60 @@
 import { NavLink } from 'react-router-dom'
-import { X } from 'lucide-react'
+import {
+  X,
+  Home,
+  ListChecks,
+  Inbox,
+  FolderKanban,
+  Rocket,
+  Kanban,
+  ListTodo,
+  Calendar,
+  BookOpen,
+  PenTool,
+  BarChart3,
+  Sparkles,
+  Users,
+  Settings,
+  HelpCircle,
+  type LucideIcon,
+} from 'lucide-react'
 import { primaryNav, secondaryNav } from '../../lib/nav'
 import type { NavItem } from '../../lib/nav'
 
+const iconByPath: Record<string, LucideIcon> = {
+  '/': Home,
+  '/my-work': ListChecks,
+  '/inbox': Inbox,
+  '/projects': FolderKanban,
+  '/sprints': Rocket,
+  '/board': Kanban,
+  '/backlog': ListTodo,
+  '/calendar': Calendar,
+  '/wiki': BookOpen,
+  '/whiteboard': PenTool,
+  '/analytics': BarChart3,
+  '/ai': Sparkles,
+  '/team': Users,
+  '/settings': Settings,
+  '/help': HelpCircle,
+}
+
 function NavRow({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
+  const Icon = iconByPath[item.path]
   return (
     <NavLink
       to={item.path}
       end={item.path === '/'}
       onClick={onNavigate}
       className={({ isActive }) =>
-        `block rounded-md px-3 py-2 text-sm transition-colors ${
+        `flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors ${
           isActive
             ? 'bg-ink text-white'
             : 'text-ink/70 hover:bg-line/60 hover:text-ink'
         }`
       }
     >
+      {Icon && <Icon size={16} strokeWidth={1.5} className="shrink-0" />}
       {item.label}
     </NavLink>
   )
@@ -52,7 +90,7 @@ export function Sidebar({
               aria-label="Close menu"
               className="rounded-md p-1 text-mute hover:text-ink lg:hidden"
             >
-              <X size={18} />
+              <X size={18} strokeWidth={1.5} />
             </button>
           </div>
           <nav className="flex flex-col gap-1">

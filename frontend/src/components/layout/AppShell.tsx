@@ -15,7 +15,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           aria-label="Open menu"
           className="rounded-md border border-line p-2 text-ink hover:bg-paper"
         >
-          <Menu size={18} />
+          <Menu size={18} strokeWidth={1.5} />
         </button>
       </header>
 
