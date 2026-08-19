@@ -177,6 +177,8 @@ const defaultSettings: Settings = {
   mutedCategories: [],
 }
 
+export type UserRole = 'ADMIN' | 'MEMBER'
+
 interface AppState {
   projects: Project[]
   tasks: Task[]
@@ -188,6 +190,10 @@ interface AppState {
   stickyNotes: StickyNote[]
   settings: Settings
   taskCounter: number
+  isAuthenticated: boolean
+  userRole: UserRole
+  login: (role: UserRole) => void
+  logout: () => void
   addStickyNote: (color: NoteColor) => StickyNote
   updateStickyNoteText: (id: string, text: string) => void
   moveStickyNote: (id: string, x: number, y: number) => void
@@ -227,6 +233,16 @@ export const useAppStore = create<AppState>()(
   stickyNotes: seedStickyNotes,
   settings: defaultSettings,
   taskCounter: 191,
+  isAuthenticated: false,
+  userRole: 'MEMBER',
+
+  login: (role) => {
+    set({ isAuthenticated: true, userRole: role })
+  },
+
+  logout: () => {
+    set({ isAuthenticated: false, userRole: 'MEMBER' })
+  },
 
   addStickyNote: (color) => {
     const newNote: StickyNote = {

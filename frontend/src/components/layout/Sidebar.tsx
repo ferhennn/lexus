@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import {
   X,
   Home,
@@ -16,10 +16,13 @@ import {
   Users,
   Settings,
   HelpCircle,
+  LogOut,
+  ShieldCheck,
   type LucideIcon,
 } from 'lucide-react'
 import { primaryNav, secondaryNav } from '../../lib/nav'
 import type { NavItem } from '../../lib/nav'
+import { useAppStore } from '../../store/useAppStore'
 
 const iconByPath: Record<string, LucideIcon> = {
   '/': Home,
@@ -67,6 +70,16 @@ export function Sidebar({
   mobileOpen: boolean
   onClose: () => void
 }) {
+  const navigate = useNavigate()
+  const userRole = useAppStore((s) => s.userRole)
+  const logout = useAppStore((s) => s.logout)
+
+  function handleLogout() {
+    logout()
+    onClose()
+    navigate('/login')
+  }
+
   return (
     <>
       {mobileOpen && (
@@ -103,6 +116,19 @@ export function Sidebar({
           {secondaryNav.map((item) => (
             <NavRow key={item.path} item={item} onNavigate={onClose} />
           ))}
+          {userRole === 'ADMIN' && (
+            <div className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-ink/70">
+              <ShieldCheck size={16} strokeWidth={1.5} className="shrink-0" />
+              Admin
+            </div>
+          )}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm text-ink/70 transition-colors hover:bg-line/60 hover:text-ink"
+          >
+            <LogOut size={16} strokeWidth={1.5} className="shrink-0" />
+            Log out
+          </button>
         </nav>
       </aside>
     </>
