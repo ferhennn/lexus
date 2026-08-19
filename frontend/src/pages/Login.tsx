@@ -1,4 +1,37 @@
+import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAppStore } from '../store/useAppStore'
+import { MarqueeBand } from '../components/ui/MarqueeBand'
+import { MagneticButton } from '../components/ui/MagneticButton'
+
 export function Login() {
+  const navigate = useNavigate()
+  const login = useAppStore((s) => s.login)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+    if (!email || !password) {
+      setError('Enter email and password.')
+      return
+    }
+    setError('')
+    login('MEMBER')
+    navigate('/')
+  }
+
+  function handleAdminLogin() {
+    if (email !== 'dev' || password !== 'ruhi') {
+      setError('Invalid admin credentials.')
+      return
+    }
+    setError('')
+    login('ADMIN')
+    navigate('/')
+  }
+
   return (
     <div className="grid min-h-screen grid-cols-1 bg-white md:grid-cols-2">
       <div className="flex flex-col justify-center bg-ink px-6 py-10 text-white sm:px-16 sm:py-12">
@@ -11,15 +44,21 @@ export function Login() {
           One intelligent workspace for planning, building, documenting and
           shipping software.
         </p>
+        <MarqueeBand
+          className="mt-12 border-y border-white/15 py-3 text-white/60"
+          items={['PLAN', 'BUILD', 'SHIP', 'ITERATE']}
+        />
       </div>
       <div className="flex flex-col justify-center px-6 py-10 sm:px-16 sm:py-12">
-        <form className="mx-auto flex w-full max-w-sm flex-col gap-4">
+        <form onSubmit={handleSubmit} className="mx-auto flex w-full max-w-sm flex-col gap-4">
           <div>
             <label className="mb-1 block text-xs font-medium uppercase tracking-wide text-mute">
               Email
             </label>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
             />
           </div>
@@ -29,15 +68,25 @@ export function Login() {
             </label>
             <input
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-ink"
             />
           </div>
-          <button
+          {error && <p className="text-xs text-red-600">{error}</p>}
+          <MagneticButton
             type="submit"
             className="mt-2 rounded-md bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-black"
           >
             Continue
-          </button>
+          </MagneticButton>
+          <MagneticButton
+            type="button"
+            onClick={handleAdminLogin}
+            className="rounded-md border border-ink px-4 py-2 text-sm font-medium text-ink hover:bg-paper"
+          >
+            Login as Admin
+          </MagneticButton>
           <div className="flex gap-2">
             <button
               type="button"
