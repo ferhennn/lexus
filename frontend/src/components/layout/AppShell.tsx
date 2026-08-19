@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { Menu } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const location = useLocation()
 
   return (
     <div className="flex h-screen w-full flex-col bg-paper lg:flex-row">
@@ -21,7 +23,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <Sidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
 
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main key={location.pathname} className="animate-page-in flex-1 overflow-y-auto">
+        {children}
+      </main>
     </div>
   )
 }
