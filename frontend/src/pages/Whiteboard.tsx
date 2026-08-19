@@ -1,5 +1,111 @@
-import { PagePlaceholder } from '../components/ui/PagePlaceholder'
+import { useRef, useState } from 'react'
+import { useAppStore, noteColors, type NoteColor } from '../store/useAppStore'
 
 export function Whiteboard() {
-  return <PagePlaceholder eyebrow="Collaboration" title="Whiteboard" />
+  const stickyNotes = useAppStore((s) => s.stickyNotes)
+  const addStickyNote = useAppStore((s) => s.addStickyNote)
+  const updateStickyNoteText = useAppStore((s) => s.updateStickyNoteText)
+  const moveStickyNote = useAppStore((s) => s.moveStickyNote)
+  const deleteStickyNote = useAppStore((s) => s.deleteStickyNote)
+
+  const boardRef = useRef<HTMLDivElement>(null)
+  const dragState = useRef<{ id: string; offsetX: number; offsetY: number } | null>(null)
+  const [draggingId, setDraggingId] = useState<string | null>(null)
+
+  function handlePointerDown(e: React.PointerEvent, id: string, noteX: number, noteY: number) {
+    const board = boardRef.current
+    if (!board) return
+    const rect = board.getBoundingClientRect()
+    dragState.current = {
+      id,
+      offsetX: e.clientX - rect.left - noteX,
+      offsetY: e.clientY - rect.top - noteY,
+    }
+    setDraggingId(id)
+    ;(e.target as Element).setPointerCapture(e.pointerId)
+  }
+
+  function handlePointerMove(e: React.PointerEvent) {
+    const drag = dragState.current
+    const board = boardRef.current
+    if (!drag || !board) return
+    const rect = board.getBoundingClientRect()
+    const x = Math.max(0, Math.min(e.clientX - rect.left - drag.offsetX, rect.width - 176))
+    const y = Math.max(0, Math.min(e.clientY - rect.top - drag.offsetY, rect.height - 176))
+    moveStickyNote(drag.id, x, y)
+  }
+
+  function handlePointerUp() {
+    dragState.current = null
+    setDraggingId(null)
+  }
+
+  return (
+    <div className="px-4 py-6 sm:px-8 sm:py-8 lg:px-16 lg:py-12">
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
+        <div className="text-xs font-medium uppercase tracking-widest text-mute">Collaboration</div>
+        <div className="flex gap-2">
+          {noteColors.map((color) => (
+            <button
+              key={color}
+              onClick={() => addStickyNote(color)}
+              className="h-7 w-7 rounded-full border border-line shadow-sm transition hover:scale-110"
+              style={{ backgroundColor: color }}
+              aria-label={`Add ${color} sticky note`}
+            />
+          ))}
+        </div>
+      </div>
+      <h1 className="text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">
+        Whiteboard
+      </h1>
+
+      <div
+        ref={boardRef}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        className="relative mt-8 h-[560px] w-full overflow-hidden border border-line bg-paper bg-[radial-gradient(#e7e6e2_1px,transparent_1px)] [background-size:20px_20px]"
+      >
+        {stickyNotes.length === 0 && (
+          <div className="flex h-full items-center justify-center text-sm text-mute">
+            Click a color above to drop a sticky note.
+          </div>
+        )}
+        {stickyNotes.map((note) => (
+          <div
+            key={note.id}
+            style={{ left: note.x, top: note.y, backgroundColor: note.color as NoteColor }}
+            className={`group absolute flex h-44 w-44 flex-col rounded-sm shadow-md touch-none ${
+              draggingId === note.id ? 'z-10 shadow-lg' : ''
+            }`}
+          >
+            <div
+              onPointerDown={(e) => handlePointerDown(e, note.id, note.x, note.y)}
+              className="flex h-5 shrink-0 cursor-grab items-center justify-center gap-0.5 active:cursor-grabbing"
+            >
+              <span className="h-1 w-1 rounded-full bg-black/25" />
+              <span className="h-1 w-1 rounded-full bg-black/25" />
+              <span className="h-1 w-1 rounded-full bg-black/25" />
+            </div>
+            <button
+              onClick={() => deleteStickyNote(note.id)}
+              className="absolute right-1.5 top-1.5 hidden h-5 w-5 items-center justify-center rounded-full bg-black/10 text-xs text-black/60 hover:bg-black/20 group-hover:flex"
+              aria-label="Delete note"
+            >
+              ✕
+            </button>
+            <textarea
+              value={note.text}
+              onChange={(e) => updateStickyNoteText(note.id, e.target.value)}
+              placeholder="Write something..."
+              className="min-h-0 w-full flex-1 resize-none bg-transparent px-3 pb-1 text-sm leading-snug text-black/80 outline-none placeholder:text-black/40"
+            />
+            <div className="shrink-0 px-3 pb-2 text-[10px] font-medium uppercase tracking-wide text-black/40">
+              {note.author}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }

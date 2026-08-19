@@ -90,6 +90,24 @@ const seedWikiPages: WikiPage[] = [
   },
 ]
 
+export const noteColors = ['#fff2a8', '#ffd6d6', '#d6ffe0', '#d6e8ff', '#ecd6ff'] as const
+export type NoteColor = (typeof noteColors)[number]
+
+export interface StickyNote {
+  id: string
+  text: string
+  color: NoteColor
+  x: number
+  y: number
+  author: string
+}
+
+const seedStickyNotes: StickyNote[] = [
+  { id: 'note-1', text: 'Retro: celebrate the auth flow ship 🎉', color: '#fff2a8', x: 40, y: 40, author: 'Devendra' },
+  { id: 'note-2', text: 'Payments API still blocked on vendor sandbox access', color: '#ffd6d6', x: 320, y: 100, author: 'Achal' },
+  { id: 'note-3', text: 'Sketch new dashboard layout before Sprint 9', color: '#d6e8ff', x: 90, y: 260, author: 'Vidhi' },
+]
+
 export type NotificationCategory = 'MENTIONS' | 'TASKS' | 'PROJECTS' | 'AI' | 'SYSTEM'
 
 export interface Notification {
@@ -167,8 +185,13 @@ interface AppState {
   notifications: Notification[]
   members: Member[]
   wikiPages: WikiPage[]
+  stickyNotes: StickyNote[]
   settings: Settings
   taskCounter: number
+  addStickyNote: (color: NoteColor) => StickyNote
+  updateStickyNoteText: (id: string, text: string) => void
+  moveStickyNote: (id: string, x: number, y: number) => void
+  deleteStickyNote: (id: string) => void
   addMember: (input: NewMemberInput) => Member
   addWikiPage: (input: NewWikiPageInput) => WikiPage
   updateWikiPage: (id: string, input: { title: string; content: string }) => void
@@ -201,8 +224,38 @@ export const useAppStore = create<AppState>()(
   notifications: seedNotifications,
   members: seedMembers,
   wikiPages: seedWikiPages,
+  stickyNotes: seedStickyNotes,
   settings: defaultSettings,
   taskCounter: 191,
+
+  addStickyNote: (color) => {
+    const newNote: StickyNote = {
+      id: `note-${Date.now()}`,
+      text: '',
+      color,
+      x: 40 + Math.round(Math.random() * 120),
+      y: 40 + Math.round(Math.random() * 80),
+      author: get().settings.displayName,
+    }
+    set((state) => ({ stickyNotes: [...state.stickyNotes, newNote] }))
+    return newNote
+  },
+
+  updateStickyNoteText: (id, text) => {
+    set((state) => ({
+      stickyNotes: state.stickyNotes.map((n) => (n.id === id ? { ...n, text } : n)),
+    }))
+  },
+
+  moveStickyNote: (id, x, y) => {
+    set((state) => ({
+      stickyNotes: state.stickyNotes.map((n) => (n.id === id ? { ...n, x, y } : n)),
+    }))
+  },
+
+  deleteStickyNote: (id) => {
+    set((state) => ({ stickyNotes: state.stickyNotes.filter((n) => n.id !== id) }))
+  },
 
   addWikiPage: (input) => {
     const id = input.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `page-${Date.now()}`
@@ -402,6 +455,7 @@ export const useAppStore = create<AppState>()(
       notifications: seedNotifications,
       members: seedMembers,
       wikiPages: seedWikiPages,
+      stickyNotes: seedStickyNotes,
       settings: defaultSettings,
       taskCounter: 191,
     })
