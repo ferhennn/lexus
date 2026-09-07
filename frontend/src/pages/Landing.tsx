@@ -73,7 +73,7 @@ export function Landing() {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
+    <div className="min-h-screen overflow-x-clip bg-paper text-ink">
       <SiteNav />
 
       {/* Hero */}
@@ -94,7 +94,7 @@ export function Landing() {
           className="pointer-events-none absolute -right-10 bottom-[-3rem] -z-10 w-[360px] opacity-[0.05] sm:w-[520px]"
         />
 
-        <div className="mx-auto max-w-6xl px-6 pb-16 pt-28 text-center sm:pt-36">
+        <div className="mx-auto max-w-6xl px-5 pb-12 pt-24 text-center sm:px-6 sm:pb-16 sm:pt-36">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white/70 px-3 py-1 text-xs font-medium uppercase tracking-widest text-mute backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
@@ -102,7 +102,7 @@ export function Landing() {
             </span>
           </Reveal>
           <Reveal delay={60}>
-            <h1 className="mx-auto mt-6 max-w-4xl text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-[5rem]">
+            <h1 className="mx-auto mt-6 max-w-4xl text-[2rem] font-semibold leading-[1.05] tracking-tight sm:text-6xl sm:leading-[1.02] lg:text-[5rem]">
               PLAN, BUILD, AND{' '}
               <span className="relative inline-block">
                 <span
@@ -155,7 +155,7 @@ export function Landing() {
           </p>
         </div>
 
-        <Reveal delay={120} className="relative mx-auto max-w-5xl px-6">
+        <Reveal delay={120} className="relative mx-auto max-w-5xl px-5 sm:px-6">
           <div
             aria-hidden
             className="pointer-events-none absolute inset-x-10 top-10 -z-10 h-3/4 rounded-[40px] bg-accent/20 blur-[100px]"
@@ -163,7 +163,7 @@ export function Landing() {
           <ProductMock />
         </Reveal>
 
-        <div className="mt-16 bg-ink py-3 text-white">
+        <div className="mt-12 bg-ink py-3 text-white sm:mt-16">
           <MarqueeBand
             items={['PLAN', 'GROOM', 'ESTIMATE', 'SPRINT', 'BUILD', 'REVIEW', 'SHIP', 'ITERATE']}
             className="text-white/70"
@@ -172,7 +172,7 @@ export function Landing() {
       </section>
 
       {/* Features */}
-      <section id="features" className="mx-auto max-w-6xl px-6 py-24">
+      <section id="features" className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-widest text-mute">
             Everything, connected
@@ -185,7 +185,7 @@ export function Landing() {
         <div className="mt-12 grid grid-cols-1 gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f, i) => (
             <Reveal key={f.title} delay={i * 50} className="h-full">
-              <article className="flex h-full flex-col bg-paper p-8">
+              <article className="flex h-full flex-col bg-paper p-6 sm:p-8">
                 <f.icon size={22} strokeWidth={1.5} className="text-ink" />
                 <h3 className="mt-5 text-base font-semibold tracking-tight">{f.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-mute">{f.body}</p>
@@ -197,7 +197,7 @@ export function Landing() {
 
       {/* Workflow */}
       <section id="workflow" className="border-y border-line bg-white">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-widest text-mute">How it works</p>
             <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -205,11 +205,11 @@ export function Landing() {
             </h2>
           </Reveal>
 
-          <div className="mt-16 flex flex-col gap-20">
+          <div className="mt-12 flex flex-col gap-14 sm:mt-16 sm:gap-20">
             {workflow.map((row, i) => (
               <Reveal key={row.title}>
                 <div
-                  className={`grid grid-cols-1 items-center gap-10 lg:grid-cols-2 ${
+                  className={`grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-10 ${
                     i % 2 === 1 ? 'lg:[&>*:first-child]:order-2' : ''
                   }`}
                 >
@@ -222,7 +222,9 @@ export function Landing() {
                     </h3>
                     <p className="mt-4 max-w-md text-sm leading-relaxed text-mute">{row.body}</p>
                   </div>
-                  <div className="border border-line bg-paper p-5">{row.visual}</div>
+                  <div className="overflow-x-auto border border-line bg-paper p-4 sm:p-5">
+                    {row.visual}
+                  </div>
                 </div>
               </Reveal>
             ))}
@@ -231,8 +233,8 @@ export function Landing() {
       </section>
 
       {/* Stats */}
-      <section className="bg-ink py-20 text-white">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 text-center sm:grid-cols-3">
+      <section className="bg-ink py-16 text-white sm:py-20">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-5 text-center sm:grid-cols-3 sm:gap-10 sm:px-6">
           {[
             ['12+', 'Point tools it replaces'],
             ['1', 'Place your team actually looks'],
@@ -247,9 +249,9 @@ export function Landing() {
       </section>
 
       {/* Quote */}
-      <section className="mx-auto max-w-3xl px-6 py-24 text-center">
+      <section className="mx-auto max-w-3xl px-5 py-16 text-center sm:px-6 sm:py-24">
         <Reveal>
-          <blockquote className="text-2xl font-medium leading-snug tracking-tight sm:text-3xl">
+          <blockquote className="text-xl font-medium leading-snug tracking-tight sm:text-3xl">
             &ldquo;We cancelled four subscriptions the week we moved to Nexus. Planning
             went from a Monday ritual to something that just happens.&rdquo;
           </blockquote>
@@ -260,10 +262,10 @@ export function Landing() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-ink py-24 text-white">
-        <div className="mx-auto max-w-3xl px-6 text-center">
+      <section className="bg-ink py-16 text-white sm:py-24">
+        <div className="mx-auto max-w-3xl px-5 text-center sm:px-6">
           <Reveal>
-            <h2 className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+            <h2 className="text-3xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
               BUILD BETTER.
               <br />
               TOGETHER.
@@ -291,8 +293,8 @@ export function Landing() {
 
 function SiteNav() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-6">
-      <div className="mx-auto mt-4 flex h-16 max-w-6xl items-center justify-between rounded-full border border-line bg-white/75 pl-7 pr-4 shadow-[0_10px_40px_-14px_rgba(17,17,17,0.22)] backdrop-blur-md sm:pr-5">
+    <header className="fixed inset-x-0 top-0 z-50 px-4 sm:px-6">
+      <div className="mx-auto mt-3 flex h-14 max-w-6xl items-center justify-between rounded-full border border-line bg-white/75 pl-5 pr-3 shadow-[0_10px_40px_-14px_rgba(17,17,17,0.22)] backdrop-blur-md sm:mt-4 sm:h-16 sm:pl-7 sm:pr-5">
         <Link to="/" className="flex items-center">
           <img src="/logo-wordmark.png" alt="Nexus" className="h-7 w-auto" />
         </Link>
@@ -332,8 +334,8 @@ function SiteFooter() {
   ]
   return (
     <footer className="border-t border-line bg-paper">
-      <div className="mx-auto max-w-6xl px-6 py-14">
-        <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
+      <div className="mx-auto max-w-6xl px-5 py-12 sm:px-6 sm:py-14">
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 sm:gap-10">
           <div className="col-span-2 sm:col-span-1">
             <img src="/logo-wordmark.png" alt="Nexus" className="h-5 w-auto" />
             <p className="mt-3 max-w-[14rem] text-xs leading-relaxed text-mute">
