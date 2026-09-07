@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /login
+
+# Update the domain if the site ships on a different host.
+Sitemap: https://nexus.app/sitemap.xml
