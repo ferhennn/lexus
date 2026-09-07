@@ -4,11 +4,20 @@ type MagneticButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   pull?: number
 }
 
-export function MagneticButton({ pull = 14, className = '', children, ...props }: MagneticButtonProps) {
+export function MagneticButton({
+  pull = 14,
+  className = '',
+  children,
+  style,
+  onMouseMove,
+  onMouseLeave,
+  ...props
+}: MagneticButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
 
   function handleMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
+    onMouseMove?.(e)
     const el = ref.current
     if (!el) return
     const rect = el.getBoundingClientRect()
@@ -17,7 +26,8 @@ export function MagneticButton({ pull = 14, className = '', children, ...props }
     setOffset({ x: relX * pull, y: relY * pull })
   }
 
-  function handleMouseLeave() {
+  function handleMouseLeave(e: React.MouseEvent<HTMLButtonElement>) {
+    onMouseLeave?.(e)
     setOffset({ x: 0, y: 0 })
   }
 
@@ -27,6 +37,7 @@ export function MagneticButton({ pull = 14, className = '', children, ...props }
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{
+        ...style,
         transform: `translate(${offset.x}px, ${offset.y}px)`,
         transition: 'transform 200ms cubic-bezier(0.16, 1, 0.3, 1)',
       }}
