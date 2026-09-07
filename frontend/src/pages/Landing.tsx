@@ -14,6 +14,7 @@ import {
 import { MarqueeBand } from '../components/ui/MarqueeBand'
 import { MagneticButton } from '../components/ui/MagneticButton'
 import { Reveal } from '../components/marketing/Reveal'
+import { useSeo } from '../lib/seo'
 
 const features = [
   {
@@ -71,6 +72,10 @@ const workflow = [
 
 export function Landing() {
   const navigate = useNavigate()
+  useSeo({
+    description:
+      'Nexus folds your backlog, sprints, docs, whiteboards and an AI copilot into one fast workspace, so the plan and the work never drift apart. Free in open beta.',
+  })
 
   return (
     <div className="min-h-screen overflow-x-clip bg-paper text-ink">

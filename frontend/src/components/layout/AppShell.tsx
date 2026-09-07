@@ -3,10 +3,16 @@ import type { ReactNode } from 'react'
 import { Menu } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
+import { primaryNav, secondaryNav } from '../../lib/nav'
+import { useSeo } from '../../lib/seo'
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const location = useLocation()
+  const currentPage = [...primaryNav, ...secondaryNav].find(
+    (item) => item.path === location.pathname,
+  )
+  useSeo({ title: currentPage?.label ?? 'Workspace' })
 
   return (
     <div className="flex h-screen w-full flex-col bg-paper lg:flex-row">

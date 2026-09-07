@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { useAppStore } from '../store/useAppStore'
 import { MarqueeBand } from '../components/ui/MarqueeBand'
 import { MagneticButton } from '../components/ui/MagneticButton'
+import { useSeo } from '../lib/seo'
 
 export function Login() {
   const navigate = useNavigate()
+  useSeo({ title: 'Sign in', description: 'Sign in to your Nexus workspace.' })
   const login = useAppStore((s) => s.login)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
