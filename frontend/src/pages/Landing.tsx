@@ -172,7 +172,10 @@ export function Landing() {
       </section>
 
       {/* Features */}
-      <section id="features" className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
+      <section
+        id="features"
+        className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16 sm:scroll-mt-24 sm:px-6 sm:py-24"
+      >
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-widest text-mute">
             Everything, connected
@@ -196,7 +199,10 @@ export function Landing() {
       </section>
 
       {/* Workflow */}
-      <section id="workflow" className="border-y border-line bg-white">
+      <section
+        id="workflow"
+        className="scroll-mt-20 border-y border-line bg-white sm:scroll-mt-24"
+      >
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-24">
           <Reveal>
             <p className="text-xs font-semibold uppercase tracking-widest text-mute">How it works</p>
